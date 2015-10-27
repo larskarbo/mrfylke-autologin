@@ -11,18 +11,13 @@ function enter(){
 	
 	//add message field
 	$('#saveAndSubmit').after('<div id="message"></div>');
-	$('#message').css('color','green');
-	$('#message').css('marginTop','20px');
-	$('#message').css('fontSize','40px');
 	
 	$('#saveAndSubmit').on('click',saveAndSubmit);
     
     var creds;
-    if(error()){
-        //wrong password, let the user set new creds
-        console.log('error found (wrong password)');
-    }else if(creds = checkIfCookiesAreSet()){
-        //they are set, log me in;
+
+    if(creds = checkIfCookiesAreSet()){
+        //cookies are set, log me in;
         console.log('creds found');
         logIn(creds.username,creds.password);
         
@@ -33,6 +28,34 @@ function enter(){
     
    
 }
+
+setMessage = function(){
+	// private
+
+	function setText(text){
+		$('#message').html(text);
+	}
+
+	// public
+	return {
+		success:function(text){
+			setText(text);
+
+			$('#message').css('color','green');
+			$('#message').css('marginTop','20px');
+			$('#message').css('fontSize','40px');
+		},
+
+		error:function(text){
+			setText(text);
+
+			$('#message').css('color','red');
+			$('#message').css('marginTop','15px');
+			$('#message').css('fontSize','20px');
+		}
+	}
+
+}();
 
 function checkIfCookiesAreSet(){
     
@@ -46,7 +69,7 @@ function checkIfCookiesAreSet(){
 }  
 
 
-function error(heading){
+function hasError(text){
     var html = document.getElementsByTagName('html')[0].innerHTML;
     
     if(html.search('Login Error') <= 0){
@@ -79,13 +102,20 @@ function logIn(u,p){
 	}
 	
 	$.post( "login.html", data)
-	  .done(function() {
-		console.log("second success");
-		$('#message').html('dette gikk bra');
-		window.location="http://ungweb.no/"
+	  .done(function(result) {
+
+	  	if(!hasError(result)){
+
+	  		console.log("success");
+			setMessage.success('dette gikk bra');
+			window.location="http://ungweb.no/"
+	  	}else{
+
+	  		setMessage.error('ops, tullelure skjedde<br>sjekk brukernavn/passord');
+	  	}
 	  })
 	  .fail(function() {
-		$('#message').html('offadå noko dumt skjedde');
+		setMessage.error('offadå noko dumt skjedde');
 	  })
 }
 
