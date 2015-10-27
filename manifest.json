@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "Mrfylke auto-login",
+    "version": "0.2.0",
+    "description": "Script som logger deg automatisk inn på mrfylke sitt internett.",
+    "author": "Lars",
+	
+	"content_scripts": [
+    {
+      "matches": ["https://login.mrfylke.no/*"],
+      "js": ["jquery-2.1.4.min.js","script.js"],
+      "run_at": "document_end"
+    }
+    ],
+	"permissions": [
+    "tabs"
+	]
+}
