@@ -7,7 +7,7 @@
 	
 	"content_scripts": [
     {
-      "matches": ["https://login.mrfylke.no/*"],
+      "matches": ["https://login.mrfylke.no/*", "http://login.mrfylke.no/*"],
       "js": ["jquery-2.1.4.min.js","script.js"],
       "run_at": "document_end"
     }
