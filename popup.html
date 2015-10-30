@@ -1,0 +1,66 @@
+
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 100%;
+        padding:20px 40px;
+      }
+      #disableDiv {
+        margin-bottom: 40px;
+      }
+      .cont {
+        width:200px;
+      }
+
+      #message {
+        margin-top: 20px;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    
+    -->
+    <link rel="stylesheet" href="materialize.css">
+    <script src="jquery-2.1.4.min.js"></script>
+    <script src="materialize.js"></script>
+    <script src="popup.js"></script>
+  </head>
+  <body>
+    <div class="cont">
+
+      <div id="disableDiv">
+        <input type="checkbox" id="disable" checked="checked" />
+        <label for="disable">Deaktiver auto-login</label>
+      </div>
+
+      <div class="input-field">
+        <input placeholder="Placeholder" id="username" type="text" class="validate">
+        <label for="username">Bukernavn</label>
+      </div>
+
+      <div class="input-field">
+        <input placeholder="Placeholder" id="password" type="password" class="validate">
+        <label for="password">Passord</label>
+      </div>
+
+      <a id="save" class="waves-effect waves-light btn">Lagre</a>
+
+      <div id="message"></div>
+
+    </div>
+  </body>
+</html>
+

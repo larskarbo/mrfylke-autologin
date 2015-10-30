@@ -1,6 +1,5 @@
 
 function enter(){
-    
 	// add button
 	var buttonCode = '<input class="button" type="button" id="saveAndSubmit" value="Lagre auto-login"></button>';
 	$('input[name=Submit]').after(buttonCode);
@@ -16,17 +15,20 @@ function enter(){
     
     var creds;
 
-    if(creds = checkIfCookiesAreSet()){
-        //cookies are set, log me in;
-        console.log('creds found');
-        logIn(creds.username,creds.password);
-        
-    }else{
-        //we need to set a password
-        console.log('no cookies found');
-    }
+    getLocalCreds(function(result){
+    	console.log(result);
+    	if(result){
+	        //cookies are set, log me in;
+	        console.log('creds found');
+	        logIn(result.username,result.password);
+
+    	}else{
+        	//we need to set a password
+       		console.log('no creds found');
+    	}
     
    
+	});
 }
 
 setMessage = function(){
@@ -57,18 +59,6 @@ setMessage = function(){
 
 }();
 
-function checkIfCookiesAreSet(){
-    
-    var username = getCookie('username');
-    var password = getCookie('password');
-    
-    if(username.length == 0 || password.length == 0)
-        return (username + password);
-    
-    return {username:username,password:password};
-}  
-
-
 function hasError(text){
     var html = document.getElementsByTagName('html')[0].innerHTML;
     
@@ -79,18 +69,20 @@ function hasError(text){
     return false;
 }
 
-
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
-    }
-    return "";
+function getLocalCreds(callback) {
+	chrome.storage.local.get(['username','password'], function(result){
+		console.log(result);
+		if(Object.keys(result).length > 1 && result.username && result.password){
+			callback({
+				username:result.username,
+				password:result.password
+			});
+		}else{
+			callback(false);
+		}
+	})
 }
+
 
 function logIn(u,p){
 	console.log(u,p);
@@ -108,7 +100,7 @@ function logIn(u,p){
 
 	  		console.log("success");
 			setMessage.success('dette gikk bra');
-			window.location="http://ungweb.no/"
+			//window.location="http://ungweb.no/"
 	  	}else{
 
 	  		setMessage.error('ops, tullelure skjedde<br>sjekk brukernavn/passord');
@@ -119,22 +111,32 @@ function logIn(u,p){
 	  })
 }
 
-function saveCreds(u,p){
-    
-    document.cookie='username=' + u;
-    document.cookie='password=' + p;
+function saveCreds(u, p, callback){
+    chrome.storage.local.set({
+    	username:u,
+    	password:p
+    },callback)
 };
 
 function saveAndSubmit(){
     var u = document.querySelector('input[name=username]').value;
     var p = document.querySelector('input[name=password]').value;
 	
-	saveCreds(u,p);
-	logIn(u,p);
+	saveCreds(u,p, function(){
+		logIn(u,p);
+
+	});
 }
 
 function submit(){
     console.log('submitting');
 }
 
-enter();
+chrome.storage.local.get('disable', function(result){
+	console.log(result);
+	if(Object.keys(result).length > 0 && result.disable){
+
+	}else{
+		enter();
+	}
+})

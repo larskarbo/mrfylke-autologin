@@ -4,7 +4,11 @@
     "version": "0.3.0",
     "description": "Script som logger deg automatisk inn på mrfylke sitt internett.",
     "author": "Lars",
-	
+
+	"browser_action": {
+      "default_icon": "icon.png",
+      "default_popup": "popup.html"
+    },
 	"content_scripts": [
     {
       "matches": ["https://login.mrfylke.no/*", "http://login.mrfylke.no/*"],
@@ -13,6 +17,7 @@
     }
     ],
 	"permissions": [
-    "tabs"
+    "tabs",
+    "storage"
 	]
 }
